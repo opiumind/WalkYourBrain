@@ -1,0 +1,7 @@
+<resources>
+  <string name="app_name">WalkYourBrain</string>
+  <string name="title_activity_maps">WalkYourBrain</string>
+  <string name="permission_rationale_location">This game needs to see where you are not to miss the moment when you win.</string>
+  <string name="location_permission_denied">This game really needs your location permission to go on. Please try again and grant access to use the location.\nIf the permission has been permanently denied, it can be enabled from the System Settings &gt; Apps &gt; \'Google Maps API Demos\'.</string>
+  <string name="permission_required_toast">We are begging you to give us the location permission.</string>
+</resources>
