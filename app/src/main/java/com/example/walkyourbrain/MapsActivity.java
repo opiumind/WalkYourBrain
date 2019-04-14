@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 
@@ -68,6 +69,7 @@ public class MapsActivity extends FragmentActivity
         OnMapReadyCallback,
         OnMyLocationButtonClickListener,
         OnMyLocationClickListener,
+        LocationSource.OnLocationChangedListener,
         ActivityCompat.OnRequestPermissionsResultCallback {
 
     /**
@@ -146,11 +148,16 @@ public class MapsActivity extends FragmentActivity
     public boolean isInsideRegion(Location currentLocation, Location centerOfRegion, double radius) {
         double longDiff = currentLocation.getLongitude() - centerOfRegion.getLongitude();
         double latDiff = currentLocation.getLatitude() - centerOfRegion.getLatitude();
-        
+
         if ((Math.pow(longDiff, 2) + Math.pow(latDiff, 2)) < Math.pow(radius, 2)) {
             return true;
         }
         return false;
+    }
+
+    public void onLocationChanged(Location location) {
+        Toast.makeText(this, "MyLocation was changed", Toast.LENGTH_SHORT).show();
+
     }
 
     /**
