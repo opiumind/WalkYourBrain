@@ -34,6 +34,14 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -68,6 +76,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import android.view.LayoutInflater;
+import android.view.Gravity;
+import android.view.MotionEvent;
 
 public class MapsActivity extends FragmentActivity
         implements
@@ -152,27 +163,19 @@ public class MapsActivity extends FragmentActivity
                 //starting position:
                 double lat1 = 38.907665;
                 double lon1 = -77.071507;
-//                double clat1 =
-//                double clon1 =
-//
+
                 //puzzle 1
                 double lat2 = 38.907728;
                 double lon2 = -77.067931;
-//                double clat2 =
-//                double clon2 =
-//
+
                 //puzzle 2
                 double lat3 = 38.906034;
                 double lon3 = -77.070431;
-//                double clat3 =
-//                double clon3 =
-//
+
                 //puzzle 3
                 double lat4 = 38.905263;
                 double lon4 = -77.066218;
-//                double clat4 =
-//                double clon4 =
-//
+
                 if (isInsideRegion(lat2, lon2, curLat, curLon, 3)) {
                     Toast.makeText(MapsActivity.super.getApplicationContext(), "YOU ARE CORRECT!!!!!", Toast.LENGTH_SHORT).show();
 
@@ -183,6 +186,34 @@ public class MapsActivity extends FragmentActivity
         this.mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         this.mFusedLocationClient.requestLocationUpdates(this.locationRequest,
                 this.locationCallback, Looper.myLooper());
+    }
+
+    //show puzzle popup
+    public void onButtonShowPopupWindowClick(View view) {
+
+        // inflate the layout of the popup window
+        LayoutInflater inflater = (LayoutInflater)
+                getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.puzzle_popup, null);
+
+        // create the popup window
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        boolean focusable = true; // lets taps outside the popup also dismiss it
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+        // show the popup window
+        // which view you pass in doesn't matter, it is only used for the window tolken
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+
+        // dismiss the popup window when touched
+        popupView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                popupWindow.dismiss();
+                return true;
+            }
+        });
     }
 
 
@@ -218,13 +249,6 @@ public class MapsActivity extends FragmentActivity
 
     // Check if a user came into a specific region. Radius in meters.
     public boolean isInsideRegion(double centerLatitude, double centerLongitude, double testLatitude, double testLongitude, double radius) {
-//        double longDiff = currentLocation.getLongitude() - centerOfRegion.getLongitude();
-//        double latDiff = currentLocation.getLatitude() - centerOfRegion.getLatitude();
-//
-//        if ((Math.pow(longDiff, 2) + Math.pow(latDiff, 2)) < Math.pow(radius, 2)) {
-//            return true;
-//        }
-//        return false;
         float[] results = new float[1];
         Location.distanceBetween(centerLatitude, centerLongitude, testLatitude, testLongitude, results);
         float distanceInMeters = results[0];
