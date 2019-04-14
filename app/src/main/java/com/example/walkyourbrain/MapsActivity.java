@@ -1,12 +1,17 @@
 package com.example.walkyourbrain;
 
 import android.annotation.SuppressLint;
+import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
 
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.LocationSource;
@@ -72,6 +77,16 @@ public class MapsActivity extends FragmentActivity
         LocationSource.OnLocationChangedListener,
         ActivityCompat.OnRequestPermissionsResultCallback {
 
+
+    private FusedLocationProviderClient mFusedLocationClient;
+    private LocationCallback locationCallback;
+    private LocationRequest locationRequest;
+    private LocationSettingsRequest locationSettingsRequest;
+
+
+    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 1000;
+    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 1000;
+
     /**
      * Request code for location permission request.
      *
@@ -93,6 +108,7 @@ public class MapsActivity extends FragmentActivity
     // The entry point to the Fused Location Provider.
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,6 +127,62 @@ public class MapsActivity extends FragmentActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        this.locationRequest = new LocationRequest();
+        this.locationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
+        this.locationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
+        this.locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        builder.addLocationRequest(this.locationRequest);
+        this.locationSettingsRequest = builder.build();
+
+        this.locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult); // why? this. is. retarded. Android.
+                Location currentLocation = locationResult.getLastLocation();
+
+                Toast.makeText(MapsActivity.super.getApplicationContext(), "Current location:\n" + currentLocation.toString(), Toast.LENGTH_LONG).show();
+
+                //current latitude:
+                double curLat = currentLocation.getLatitude();
+                double curLon = currentLocation.getLongitude();
+
+                //starting position:
+                double lat1 = 38.907665;
+                double lon1 = -77.071507;
+//                double clat1 =
+//                double clon1 =
+//
+                //puzzle 1
+                double lat2 = 38.907728;
+                double lon2 = -77.067931;
+//                double clat2 =
+//                double clon2 =
+//
+                //puzzle 2
+                double lat3 = 38.906034;
+                double lon3 = -77.070431;
+//                double clat3 =
+//                double clon3 =
+//
+                //puzzle 3
+                double lat4 = 38.905263;
+                double lon4 = -77.066218;
+//                double clat4 =
+//                double clon4 =
+//
+                if (isInsideRegion(lat2, lon2, curLat, curLon, 3)) {
+                    Toast.makeText(MapsActivity.super.getApplicationContext(), "YOU ARE CORRECT!!!!!", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        };
+
+        this.mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        this.mFusedLocationClient.requestLocationUpdates(this.locationRequest,
+                this.locationCallback, Looper.myLooper());
     }
 
 
@@ -144,19 +216,23 @@ public class MapsActivity extends FragmentActivity
         enableMyLocation();
     }
 
-    // Check if a user came into a specific region
-    public boolean isInsideRegion(Location currentLocation, Location centerOfRegion, double radius) {
-        double longDiff = currentLocation.getLongitude() - centerOfRegion.getLongitude();
-        double latDiff = currentLocation.getLatitude() - centerOfRegion.getLatitude();
-
-        if ((Math.pow(longDiff, 2) + Math.pow(latDiff, 2)) < Math.pow(radius, 2)) {
-            return true;
-        }
-        return false;
+    // Check if a user came into a specific region. Radius in meters.
+    public boolean isInsideRegion(double centerLatitude, double centerLongitude, double testLatitude, double testLongitude, double radius) {
+//        double longDiff = currentLocation.getLongitude() - centerOfRegion.getLongitude();
+//        double latDiff = currentLocation.getLatitude() - centerOfRegion.getLatitude();
+//
+//        if ((Math.pow(longDiff, 2) + Math.pow(latDiff, 2)) < Math.pow(radius, 2)) {
+//            return true;
+//        }
+//        return false;
+        float[] results = new float[1];
+        Location.distanceBetween(centerLatitude, centerLongitude, testLatitude, testLongitude, results);
+        float distanceInMeters = results[0];
+        return distanceInMeters < radius;
     }
 
     public void onLocationChanged(Location location) {
-        Toast.makeText(this, "MyLocation was changed", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "MyLocation was changed", Toast.LENGTH_LONG).show();
 
     }
 
