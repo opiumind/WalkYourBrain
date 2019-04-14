@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="350dp"
     android:layout_height="475dp"
@@ -19,17 +21,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="The Puzzle"
+            android:text="Start: GeorgeTown, O St NW"
             android:textStyle="bold"
             android:textColor="#FFFFFF"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="5dp"/>
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="false"
+        android:background="@drawable/cs_clue1"
+        tools:srcCompat="@drawable/cs_clue1" />
 
 
 </LinearLayout>
