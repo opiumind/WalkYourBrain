@@ -142,6 +142,17 @@ public class MapsActivity extends FragmentActivity
         enableMyLocation();
     }
 
+    // Check if a user came into a specific region
+    public boolean isInsideRegion(Location currentLocation, Location centerOfRegion, double radius) {
+        double longDiff = currentLocation.getLongitude() - centerOfRegion.getLongitude();
+        double latDiff = currentLocation.getLatitude() - centerOfRegion.getLatitude();
+        
+        if ((Math.pow(longDiff, 2) + Math.pow(latDiff, 2)) < Math.pow(radius, 2)) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Enables the My Location layer if the fine location permission has been granted.
      */
