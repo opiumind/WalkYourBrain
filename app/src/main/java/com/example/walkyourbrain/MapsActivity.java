@@ -1,6 +1,9 @@
 package com.example.walkyourbrain;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -88,6 +91,7 @@ public class MapsActivity extends FragmentActivity
         LocationSource.OnLocationChangedListener,
         ActivityCompat.OnRequestPermissionsResultCallback {
 
+    Dialog myDialog;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback locationCallback;
@@ -134,6 +138,8 @@ public class MapsActivity extends FragmentActivity
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         setContentView(R.layout.activity_maps);
+        myDialog = new Dialog(this);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -186,6 +192,22 @@ public class MapsActivity extends FragmentActivity
         this.mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         this.mFusedLocationClient.requestLocationUpdates(this.locationRequest,
                 this.locationCallback, Looper.myLooper());
+    }
+
+    public void ShowPopup(View v) {
+        TextView txtclose;
+        Button btnFollow;
+        myDialog.setContentView(R.layout.puzzle_popup);
+        txtclose =(TextView) myDialog.findViewById(R.id.txtclose);
+        txtclose.setText("Close");
+        txtclose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myDialog.dismiss();
+            }
+        });
+        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        myDialog.show();
     }
 
     //show puzzle popup
